@@ -28,7 +28,7 @@ heron(A, B, C) ->
 
 % Define a function enclose/1 that takes a shape an returns the smallest enclosing rectangle of the shape.
 enclose({circle, R}) ->
-    {rectangle, R, R};
+    {rectangle, 2.0*R, 2.0*R};
 enclose({rectangle, W, H}) ->
     {rectangle, W, H};
 
