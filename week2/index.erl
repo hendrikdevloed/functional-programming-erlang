@@ -86,7 +86,7 @@ tag_linenumber([Line|Lines], LineNum, Result) ->
     end.
 
 % convert page to page list and join identical words [{"aword",5},{"word",1},{"word",2}] into [{"aword",[5]}, {"word",[1,2]}]
-nub_wordlist(WordList) -> nub_wordlist(WordList, [], [], []).
+nub_wordlist(WordList) -> lists:reverse(nub_wordlist(WordList, [], [], [])).
 
 nub_wordlist([], [], [], Result) -> Result;
 nub_wordlist([], LastWord, LastLines, Result) -> [{LastWord, lists:sort(LastLines)}|Result];
