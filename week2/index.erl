@@ -44,8 +44,8 @@ show_file_contents([L|Ls]) ->
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % For the purposes of this exercise, we define skippable punctuation as every non-letter
-is_punctuation(Char) when (Char >= $a) and (Char =< $z) -> false;
-is_punctuation(Char) when (Char >= $A) and (Char =< $Z) -> false;
+is_punctuation(Char) when (Char >= $a) andalso (Char =< $z) -> false;
+is_punctuation(Char) when (Char >= $A) andalso (Char =< $Z) -> false;
 is_punctuation(_) -> true.
 
 % Split a string into words by breaking on and skipping over punctuation
@@ -73,22 +73,21 @@ remove_trivial_words([Word|Words], Result) ->
     end.
 
 
-% convert a list of 
+% convert a list of lines, each line containing a list of words, into a list of tuples [{linenr, [words]}]
 tag_linenumber(Lines) -> tag_linenumber(Lines, 1, []).
 
 tag_linenumber([], _, Result) -> Result;
 tag_linenumber([Line|Lines], LineNum, Result) ->
-    case Line of
+    case lists:map(fun(Word) -> {Word, LineNum} end, Line) of
         [] -> tag_linenumber(Lines, LineNum+1, Result); % Skip empty lines while tagging
-        Words ->
-            TaggedWords = lists:map(fun(Word) -> {Word, LineNum} end, Words),
-            tag_linenumber(Lines, LineNum+1, [TaggedWords|Result])
+        TaggedWords -> tag_linenumber(Lines, LineNum+1, [TaggedWords|Result])
     end.
 
 % convert page to page list and join identical words [{"aword",5},{"word",1},{"word",2}] into [{"aword",[5]}, {"word",[1,2]}]
-nub_wordlist(WordList) -> lists:reverse(nub_wordlist(WordList, [], [], [])).
+nub_wordlist([]) -> [];
+nub_wordlist([{Word,Line}|WordList]) -> lists:reverse(nub_wordlist(WordList, Word, [Line], [])).
 
-nub_wordlist([], [], [], Result) -> Result;
+nub_wordlist([], nothing, _, Result) -> Result;
 nub_wordlist([], LastWord, LastLines, Result) -> [{LastWord, lists:sort(LastLines)}|Result];
 nub_wordlist([{Word, Line}|WordList], LastWord, LastLines, Result) ->
     case Word of
