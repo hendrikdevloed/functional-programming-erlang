@@ -16,10 +16,10 @@ play_two(StrategyL,StrategyR,N) ->
 % REPLACE THE dummy DEFINITIONS
 
 play_two(_,_,PlaysL,PlaysR,0) ->
-   dummy;
+   tournament(PlaysL, PlaysR);
 
 play_two(StrategyL,StrategyR,PlaysL,PlaysR,N) ->
-   dummy.
+   play_two(StrategyL, StrategyR, [StrategyL(PlaysR)|PlaysL], [StrategyR(PlaysL)|PlaysR], N-1).
 
 %
 % interactively play against a strategy, provided as argument.
@@ -104,6 +104,11 @@ beats(paper) ->
 beats(scissors) ->
     paper.
 
+% lose(X)=Y <=> "What Y does X lose to?", i.e. Y beats X
+lose(rock) -> paper;
+lose(paper) -> scissors;
+lose(scissors) -> rock.
+
 %
 % strategies.
 %
@@ -121,15 +126,14 @@ rock(_) ->
 % REPLACE THE dummy DEFINITIONS
 
 no_repeat([]) ->
-    dummy;
+    paper;
 no_repeat([X|_]) ->
-    dummy.
+    lose(X).
 
 const(Play) ->
-    dummy.
+    Play.
 
-cycle(Xs) ->
-    dummy.
+cycle([]) -> paper;
+cycle([X|_]) -> beats(X).
 
-rand(_) ->
-    dummy.
+rand(_) -> enum(rand:uniform(3)-1).
