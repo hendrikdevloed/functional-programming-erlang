@@ -19,7 +19,11 @@ play_two(_,_,PlaysL,PlaysR,0) ->
    tournament(PlaysL, PlaysR);
 
 play_two(StrategyL,StrategyR,PlaysL,PlaysR,N) ->
-   play_two(StrategyL, StrategyR, [StrategyL(PlaysR)|PlaysL], [StrategyR(PlaysL)|PlaysR], N-1).
+    PlayL = StrategyL(PlaysR),
+    PlayR = StrategyR(PlaysL),
+    Result = result(PlayL, PlayR),
+    io:format("Result: ~p ~p : ~p~n", [PlayL, PlayR, Result]),
+    play_two(StrategyL, StrategyR, [PlayL|PlaysL], [PlayR|PlaysR], N-1).
 
 %
 % interactively play against a strategy, provided as argument.
